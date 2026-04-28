@@ -19,13 +19,6 @@ It is having a very friendly gui for **noobs**
 <img width="35%" height="35%" src="screenshots/gui.png"/><img width="35%" height="35%" src="screenshots/gui2.png"/>
 </p>
 
-### CLI
-Hi Linux Pro Hackers. Welcome! Its for you
-
-|CLI|GUI|
-| ------ | ------ |
-|![img](screenshots/linux.png)|![img](screenshots/chat.png)|
-
 ## Install
 Its simple, install python and following deps using pip
 ```python
