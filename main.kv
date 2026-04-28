@@ -1,0 +1,349 @@
+#: import partial functools.partial
+#: import Clock kivy.clock.Clock
+#: import Clipboard kivy.core.clipboard.Clipboard
+#: import CommonGestures gestures4kivy.commongestures.CommonGestures
+#: import kivy kivy
+
+MDScreen:
+	md_bg_color:app.theme_cls.bg_darkest
+	name:"main"
+	MDCustomCard:
+		size_hint:None,None
+		size:[app.x(),dp(70)]
+		radius:[dp(10),dp(10),0,0]
+		md_bg_color:app.theme_cls.bg_dark
+		RelativeLayout:
+			AnchorLayout:
+				anchor_x:"left"
+				IconButton:
+					ripple_scale:0
+					id:back_button
+					icon:"menu"          
+					on_press:Clock.schedule_once(partial(app.animate_icon,self,"arrow-left" if self.icon == "menu" else "menu" )),Clock.schedule_once(app.open_drawer,0.4)
+				MDLabel:
+					text:"PrivaChat"
+					halign:"center"
+					font_size:"25sp"
+					font_name:"assets/Poppins-Bold.ttf"
+	AnchorLayout:
+		ScreenManager:
+			size_hint:None,None
+			size:app.x(),app.y()-dp(140)
+			id:tab_manager
+			MDScreenG:
+				name:"chat"
+				md_bg_color:app.theme_cls.bg_darkest
+				AnchorLayout:
+					MDIconButton:
+						ripple_scale:0
+						icon:"account-supervisor-outline"
+						theme_icon_color:"Custom"
+						icon_color:app.theme_cls.bg_light
+						icon_size:dp(100)
+				MDCustomCard:
+					pos_hint:{"center_x":0.5,"center_y":0.15}
+					radius:dp(10)
+					md_bg_color:app.theme_cls.primary_dark
+					size_hint:None,None 
+					size:app.x()-dp(80),dp(60)
+					ripple_behavior:True
+					on_press:app.load_ad();app.chat_view.open()
+					RelativeLayout:
+						MDLabel:
+							text:"Connect to server"
+							font_name:"assets/Poppins-Regular.ttf"
+							halign:"center"
+						MDIconButton:
+							ripple_scale:0
+							pos_hint:{"center_x":0.9}
+							size_hint:1,1
+							icon:"plus"
+						MDCustomCard:
+							md_bg_color:0,0,0,0
+							on_press:app.load_ad();app.chat_view.open()
+			MDScreenG:
+				name:"server"
+				md_bg_color:app.theme_cls.bg_darkest
+				AnchorLayout:
+					MDIconButton:
+						icon:"cloud-outline"
+						ripple_scale:0
+						theme_icon_color:"Custom"
+						icon_color:app.theme_cls.bg_light
+						icon_size:dp(100)
+				MDCustomCard:
+					id:addr_box
+					pos_hint:{"center_x":0.5,"center_y":0.85}
+					md_bg_color:app.theme_cls.bg_light
+					radius:dp(15)
+					size_hint:None,None
+					size:app.x()-dp(40),dp(60)
+					opacity:0
+					RelativeLayout:
+						BoxLayout
+							size_hint:None,None
+							size:app.x()-dp(60),dp(60)
+							padding:dp(30)
+							MDLabel:
+								id:addr_text
+								text:"127.0.0.1:9876"
+								font_name:"assets/SourceCodePro-Regular.otf"
+								halign:"center"
+								font_size:"20sp"
+
+
+						AnchorLayout:
+							size_hint:None,None
+							size:dp(60),dp(60)
+							anchor_x:"right"
+							IconButton:
+								icon:"paperclip"
+								on_press:app.animate_icon(self,"clipboard-check-multiple-outline");app.Toast("Copied successfully!");Clipboard.copy(addr_text.text)
+
+				AnchorLayout:
+					id:server_card
+					opacity:0
+					MDCustomCard:
+						radius:dp(10)
+						md_bg_color:app.theme_cls.bg_light
+						size_hint:None,None
+						size:app.x()-dp(40),app.y()//3+dp(40)
+						ScrollView:
+							MDGridLayout:
+								id:server_loger
+								adaptive_height:True
+								cols:1 
+								padding:dp(10)
+								MDLabel:
+									adaptive_height:True
+									size_hint:None,None
+									size:app.x()-dp(40),dp(20)
+									text:"["+app.date()+"] : Logs start here"
+									font_name:"assets/SourceCodePro-Regular.otf"
+				MDCustomCard:
+					pos_hint:{"center_x":0.5,"center_y":0.15}
+					radius:dp(10)
+					md_bg_color:app.theme_cls.accent_color
+					size_hint:None,None 
+					size:app.x()-dp(80),dp(60)
+					ripple_behavior:True
+					on_press:app.load_ad();app.server_view.open();app.set_addr() if app.server_running == False else app.stop_server()
+					RelativeLayout:
+						MDLabel:
+							id:server_text
+							text:"Start a Server"
+							font_name:"assets/Poppins-Regular.ttf"
+							halign:"center"
+						IconButton:
+							id:server_icon
+							ripple_scale:0
+							pos_hint:{"center_x":0.9}
+							size_hint:1,1
+							icon:"plus"
+						MDCustomCard:
+							md_bg_color:0,0,0,0
+							on_press:app.load_ad();app.server_view.open();app.set_addr() if app.server_running == False else app.stop_server()
+	MDCustomCard:
+		id:control
+		pos_hint:{"center_x":0.5,"center_y":0.95}
+		size_hint:None,None
+		size:[app.x()-dp(25),dp(50)]
+		radius:dp(10)
+		md_bg_color:app.theme_cls.bg_dark
+		RelativeLayout:
+			MDSeparator:
+				orientation:"vertical"
+				pos_hint:{"center_x":0.5,"center_y":0.5}
+
+			MDCustomCard:
+				id:card
+				pos_hint:{"center_x":0.25,"center_y":0.5}
+				md_bg_color:app.theme_cls.primary_dark
+				size_hint:None,None 
+				size:control.width//2-dp(10),dp(40)    
+				radius:[dp(10),0,0,dp(10)]
+
+			MDBoxLayout:
+				AnchorLayout:
+					MDCustomCard:
+						id:cc
+						pos_hint:{"center_x":0.25,"center_y":0.5}
+						md_bg_color:0,0,0,0
+						size_hint:None,None 
+						size:control.width//2-dp(10),dp(40)
+						radius:[dp(10),0,0,dp(10)]
+						on_press:app.animate_pos_hint(card,self.pos_hint,md_bg_color=app.theme_cls.primary_dark,radius=[dp(10),0,0,dp(10)]);tab_manager.transition.direction = "right";tab_manager.current = "chat"
+						MDLabel:
+							text:"Chat"
+							halign:"center"
+							font_name:"assets/Poppins-Medium.ttf"
+				AnchorLayout:
+					MDCustomCard:
+						id:sc
+						pos_hint:{"center_x":0.75,"center_y":0.5}
+						md_bg_color:0,0,0,0
+						size_hint:None,None 
+						size:control.width//2-dp(10),dp(40)
+						radius:[0,dp(10),dp(10),0]
+						on_press:app.animate_pos_hint(card,self.pos_hint,md_bg_color=app.theme_cls.accent_color,radius=[0,dp(10),dp(10),0]);tab_manager.transition.direction = "left";tab_manager.current = "server"
+
+						MDLabel:
+							text:"Server"
+							halign:"center"
+							font_name:"assets/Poppins-Medium.ttf"
+
+
+
+	MDCustomCard:
+		id:drawer
+		pos_hint:{"center_x":-0.5,"center_y":0.5}
+		md_bg_color:0,0,0,0
+		on_press:app.open_drawer()
+		opacity:1
+		radius:0
+		MDCustomCard:
+			size_hint:None,None
+			size:[dp(280),app.y()]
+			radius:[0,dp(20),dp(20),0]
+			orientation: 'vertical'
+			md_bg_color:app.theme_cls.bg_normal
+			#on_press:app.lock_screen()
+			MDLabel:
+				size_hint:None,None 
+				size:dp(280),dp(50)
+				text:"PrivaChat"
+				halign:"center"
+				valign:"bottom"
+				font_name:"assets/Poppins-Bold.ttf"
+				font_size:"25sp"
+			MDLabel:
+				size_hint:None,None 
+				size:dp(280),dp(30)
+				text:"Coded by @T-Dynamos"
+				halign:"center"
+				font_name:"assets/Poppins-Regular.ttf"
+				font_size:"15sp"
+			MDSeparator:
+			MDBoxLayout:
+				adaptive_height:True
+				orientation:"vertical"
+				spacing:dp(20)
+				MDBoxLayout:
+					size_hint:None,None 
+					size:dp(20),dp(20)
+				AnchorLayout:
+					size_hint:None,None 
+					size:[dp(280),dp(80)]
+					MDCustomCard:
+						size_hint:None,None 
+						size:[dp(280)-dp(20),dp(80)]
+						radius:dp(10)
+						md_bg_color:app.theme_cls.primary_dark
+
+						RelativeLayout:
+							MDLabel:
+								pos_hint:{"center_x":0.35,"center_y":0.5}
+								text:"Disconnect Chat"
+								font_name:"assets/Poppins-Medium.ttf"
+								halign:"center"
+							IconButton:
+								pos_hint:{"center_x":0.85,"center_y":0.5}
+								icon:"chat-remove-outline"
+								size_hint:1,1
+								ripple_scale:0
+							MDCustomCard:				
+								pos_hint:{"center_x":0.25,"center_y":0.5}
+								md_bg_color:0,0,0,0
+								on_press:app.open_drawer();app.animate_pos_hint(card,self.pos_hint,md_bg_color=app.theme_cls.primary_dark,radius=[dp(10),0,0,dp(10)]);tab_manager.transition.direction = "right";tab_manager.current = "chat"
+
+				AnchorLayout:
+					size_hint:None,None 
+					size:[dp(280),dp(80)]
+					MDCustomCard:
+						size_hint:None,None 
+						size:[dp(280)-dp(20),dp(80)]
+						radius:dp(10)
+						md_bg_color:app.theme_cls.accent_color
+
+						RelativeLayout:
+							MDLabel:
+								pos_hint:{"center_x":0.3,"center_y":0.5}
+								text:"Stop Server"
+								font_name:"assets/Poppins-Medium.ttf"
+								halign:"center"
+							IconButton:
+								pos_hint:{"center_x":0.85,"center_y":0.5}
+								icon:"cloud-off-outline"
+								size_hint:1,1
+								ripple_scale:0
+							MDCustomCard:
+								pos_hint:{"center_x":0.75,"center_y":0.5}
+								md_bg_color:0,0,0,0
+								on_press:app.open_drawer();app.animate_pos_hint(card,self.pos_hint,md_bg_color=app.theme_cls.accent_color,radius=[0,dp(10),dp(10),0]);tab_manager.transition.direction = "left";tab_manager.current = "server"
+
+				HoverLayout:
+					radius:0,dp(10),dp(10),0
+					size_hint:None,None 
+					radius:0,dp(10),dp(10),0
+					size:dp(280)-dp(10),dp(50)
+					md_bg_color:app.theme_cls.bg_normal
+					on_enter: app.animate_md_bg_color(self,md_bg_color=app.theme_cls.bg_dark)
+					on_leave: app.animate_md_bg_color(self,md_bg_color=app.theme_cls.bg_normal)
+					on_press:app.settings_view.open()
+					RelativeLayout:
+						MDLabel:
+							pos_hint:{"center_x":0.25,"center_y":0.5}
+							text:"Settings"
+							font_name:"assets/Poppins-Medium.ttf"
+							halign:"center"
+						IconButton:
+							pos_hint:{"center_x":0.85,"center_y":0.5}
+							icon:"chevron-right"
+							ripple_scale:3
+				HoverLayout:
+					radius:0,dp(10),dp(10),0
+					size_hint:None,None 
+					size:dp(280)-dp(10),dp(50)
+					md_bg_color:app.theme_cls.bg_normal
+					on_enter: app.animate_md_bg_color(self,md_bg_color=app.theme_cls.bg_dark)
+					on_leave: app.animate_md_bg_color(self,md_bg_color=app.theme_cls.bg_normal)
+					RelativeLayout:
+						MDLabel:
+							pos_hint:{"center_x":0.32,"center_y":0.5}
+							text:"Remove ADS"
+							font_name:"assets/Poppins-Medium.ttf"
+							halign:"center"
+						IconButton:
+							pos_hint:{"center_x":0.85,"center_y":0.5}
+							icon:"chevron-right"
+							ripple_scale:3
+				HoverLayout:
+					radius:0,dp(10),dp(10),0
+					size_hint:None,None 
+					size:dp(280)-dp(10),dp(50)
+					md_bg_color:app.theme_cls.bg_normal
+					on_enter: app.animate_md_bg_color(self,md_bg_color=app.theme_cls.bg_dark)
+					on_leave: app.animate_md_bg_color(self,md_bg_color=app.theme_cls.bg_normal)
+					RelativeLayout:
+						MDLabel:
+							pos_hint:{"center_x":0.25,"center_y":0.5}
+							text:"Rate US"
+							font_name:"assets/Poppins-Medium.ttf"
+							halign:"center"
+						IconButton:
+							pos_hint:{"center_x":0.85,"center_y":0.5}
+							icon:"chevron-right"
+							ripple_scale:3
+			RelativeLayout:
+				AnchorLayout:
+					anchor_y:"bottom"
+					anchor_x:"right"
+					IconButton:
+						ripple_scale:0
+						icon:"arrow-left"
+						on_press:Clock.schedule_once(partial(app.animate_icon,app.screen_manager.get_screen("main").ids.back_button,"menu" if self.icon == "arrow-left" else "menu" ),0.1),app.open_drawer()
+
+
+
+
+

@@ -1,0 +1,70 @@
+<ListSwitch@MDBoxLayout>:
+	text:""
+	active: False
+	s_press:app.do_nothing
+	size_hint:None,None 
+	size:app.x(),dp(50)
+	padding:dp(10)
+	RelativeLayout:
+		MDLabel:
+			text:root.text
+			font_name:"assets/Poppins-Medium.ttf"
+			font_size:"15sp"
+		MDSwitch:
+			pos_hint:{"center_x":0.8,"center_y":0.3}
+			active:root.active
+			on_active:root.s_press(self)
+<ListIcon@MDBoxLayout>:
+	text:""
+	size_hint:None,None 
+	size:app.x(),dp(50)
+	padding:dp(10)
+	press:app.do_nothing
+	RelativeLayout:
+		MDLabel:
+			text:root.text
+			font_name:"assets/Poppins-Medium.ttf"
+			font_size:"15sp"
+		MDIconButton:
+			icon:"chevron-right"
+			pos_hint:{"center_x":0.9,"center_y":0.3}
+			on_press:root.press()
+ModalView:
+	on_open:app.open_modal(self)
+	on_dismiss:app.close_modal(self)
+	background_color:app.theme_cls.bg_normal
+	opacity:0
+	MDRelativeLayout:
+		md_bg_color:app.theme_cls.bg_normal
+		MDLabel:
+			pos_hint:{"center_x":0.535,"center_y":0.95}
+			text:"Settings"
+			bold:True
+			font_name:"assets/Poppins-Bold.ttf"
+			font_size:"35sp"
+		MDCustomCard:
+			size_hint:None,None
+			size:app.x(),dp(300)
+			pos_hint:{"center_x":0.5,"center_y":0.65}
+			md_bg_color:0,0,0,0
+			orientation: 'vertical'
+			padding:dp(10)
+			ListSwitch:
+				text:"Dark mode"
+				active:app.read_settings()[0] 
+				s_press:app.set_mode
+			ListSwitch:
+				text:"Save chats"
+			MDSeparator:
+			ListIcon:
+				text:"Change primary color"
+				press:lambda : app.open_theme_changer("primary")
+			ListIcon:
+				text:"Change accent color"
+				press:lambda : app.open_theme_changer("accent")
+			ListIcon:
+				text:"Change chat wallpaper"
+				press:app.open_wall
+			ListIcon:
+				text:"Change chat save path"						
+
